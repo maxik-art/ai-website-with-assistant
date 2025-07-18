@@ -9,7 +9,7 @@ load_dotenv()
 
 app = Flask(__name__)
 
-# Create OpenAI client
+# Create OpenAI client without proxies
 client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY", "your-api-key-here"))
 
 @app.route("/")
@@ -32,7 +32,11 @@ def ask_ai():
 
 @app.route("/health")
 def health():
-    return "✅ AI Assistant is running with OpenAI v1.x!"
+    try:
+        models = client.models.list()
+        return jsonify({"status": "ok", "models_count": len(models.data)})
+    except Exception as e:
+        return jsonify({"status": "error", "details": str(e)}), 500
 
 if __name__ == "__main__":
     app.run(debug=True)
