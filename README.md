@@ -1,13 +1,13 @@
 
-# AI Website with Assistant (OpenAI v1.x, Model Configurable)
+# AI Website with Assistant (Demo Mode Fallback)
 
-This Flask app uses OpenAI's API (v1.x) and allows model selection via environment variables.
+This Flask app uses OpenAI's API (v1.x). If API access fails or is not configured, it falls back to a local demo mode.
 
 ## 🚀 Deployment on Render
 
 1. Create a **New Web Service** on [render.com](https://render.com).
 2. Connect this repo.
-3. Set environment variables:
+3. Set environment variables (optional):
    ```
    OPENAI_API_KEY=sk-your-openai-key
    OPENAI_MODEL=gpt-3.5-turbo  # Or gpt-4 if available
@@ -25,7 +25,14 @@ This Flask app uses OpenAI's API (v1.x) and allows model selection via environme
 ## ✅ Health Check
 
 - Visit `/health` to verify the API key, connection, and default model.
-- Example response:
+- Demo Mode response:
   ```json
-  {"status": "ok", "models_count": 8, "default_model": "gpt-3.5-turbo"}
+  {"status": "demo", "details": "Running in Demo Mode – OpenAI API not configured or unavailable."}
   ```
+
+## 🧪 Demo Mode
+
+If OpenAI API is not available, all responses will be placeholder demo replies:
+```
+(Demo Mode) You asked: 'Your question'. This is a placeholder response.
+```
