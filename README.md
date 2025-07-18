@@ -1,15 +1,16 @@
 
-# AI Website with Assistant (OpenAI v1.x, httpx Client No Proxy)
+# AI Website with Assistant (OpenAI v1.x, Model Configurable)
 
-This is a Flask app combining a static frontend with an AI backend using OpenAI's API (v1.x).
+This Flask app uses OpenAI's API (v1.x) and allows model selection via environment variables.
 
 ## 🚀 Deployment on Render
 
 1. Create a **New Web Service** on [render.com](https://render.com).
 2. Connect this repo.
-3. Set the environment variable:
+3. Set environment variables:
    ```
    OPENAI_API_KEY=sk-your-openai-key
+   OPENAI_MODEL=gpt-3.5-turbo  # Or gpt-4 if available
    ```
 4. Build Command:
    ```
@@ -23,17 +24,8 @@ This is a Flask app combining a static frontend with an AI backend using OpenAI'
 
 ## ✅ Health Check
 
-- Visit `/health` to verify the API key and connection to OpenAI.
+- Visit `/health` to verify the API key, connection, and default model.
 - Example response:
   ```json
-  {"status": "ok", "models_count": 8}
+  {"status": "ok", "models_count": 8, "default_model": "gpt-3.5-turbo"}
   ```
-- If error:
-  ```json
-  {"status": "error", "details": "Invalid API key"}
-  ```
-
-## ⚠️ Proxy Settings
-
-This app uses `httpx.Client(proxies=None)` to completely ignore proxy settings.  
-No proxy configuration from the environment will affect API calls.
