@@ -1,0 +1,117 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="International B2B Sales and AI Insights" />
+  <title>Maxim Kechter – International Sales & AI Advisor</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f7f9fb;
+      color: #111;
+    }
+    header {
+      background-color: #111827;
+      padding: 20px;
+      color: white;
+      text-align: center;
+    }
+    main {
+      padding: 40px 20px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    section {
+      margin-bottom: 40px;
+    }
+    form, .chatbox {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 500px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      margin-top: 20px;
+      background-color: #111827;
+      color: white;
+      border: none;
+      padding: 12px;
+      width: 100%;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .response {
+      margin-top: 20px;
+      background: #f1f1f1;
+      padding: 10px;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Maxim Kechter</h1>
+    <p>International B2B Sales and AI Insights</p>
+  </header>
+
+  <main>
+    <section id="intro">
+      <h2>Welcome</h2>
+      <p>Welcome to a space to connect, learn and grow through real-world practice in sales and AI.</p>
+    </section>
+
+    <section id="about">
+      <h2>Behind the Vision</h2>
+      <p>I’m passionate about international business, digital innovation, and AI adoption in sales. This site reflects my commitment to continuous learning and community support.</p>
+    </section>
+
+    <section id="assistant">
+      <h2>Ask the AI Assistant</h2>
+      <div class="chatbox">
+        <textarea id="userInput" rows="4" placeholder="Ask me anything about sales, AI, or strategy..."></textarea>
+        <button onclick="askAssistant()">Send</button>
+        <div class="response" id="aiResponse"></div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    async function askAssistant() {
+      const userInput = document.getElementById("userInput").value;
+      const aiResponse = document.getElementById("aiResponse");
+      aiResponse.innerHTML = "⏳ Thinking...";
+
+      try {
+        const response = await fetch("/api/ask", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ message: userInput })
+        });
+        const data = await response.json();
+        if (data.reply) {
+          aiResponse.innerHTML = "🤖 " + data.reply;
+        } else {
+          aiResponse.innerHTML = "⚠️ Error: " + data.error;
+        }
+      } catch (err) {
+        aiResponse.innerHTML = "⚠️ Error connecting to AI Assistant.";
+      }
+    }
+  </script>
+</body>
+</html>
