@@ -1,5 +1,5 @@
 
-# AI Website with Assistant (OpenAI v1.x, No Proxies)
+# AI Website with Assistant (OpenAI v1.x, Proxies Removed)
 
 This is a Flask app combining a static frontend with an AI backend using OpenAI's API (v1.x).
 
@@ -33,8 +33,12 @@ This is a Flask app combining a static frontend with an AI backend using OpenAI'
   {"status": "error", "details": "Invalid API key"}
   ```
 
-## 📦 Requirements
-- Flask
-- openai>=1.30.1
-- gunicorn
-- python-dotenv
+## ⚠️ Proxy Environment Variables
+
+This app removes any proxy settings from the environment:
+```
+HTTP_PROXY, HTTPS_PROXY, http_proxy, https_proxy
+```
+to avoid OpenAI client errors.
+
+Make sure you do NOT set these in Render unless required for your network.

@@ -7,6 +7,10 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv()
 
+# Remove proxy environment variables if present
+for proxy_var in ["HTTP_PROXY", "HTTPS_PROXY", "http_proxy", "https_proxy"]:
+    os.environ.pop(proxy_var, None)
+
 app = Flask(__name__)
 
 # Create OpenAI client without proxies
