@@ -1,20 +1,23 @@
 
 from flask import Flask, render_template, request, jsonify
 from openai import OpenAI
+import httpx
 import os
 from dotenv import load_dotenv
 
 # Load environment variables
 load_dotenv()
 
-# Remove proxy environment variables if present
-for proxy_var in ["HTTP_PROXY", "HTTPS_PROXY", "http_proxy", "https_proxy"]:
-    os.environ.pop(proxy_var, None)
+# Create HTTPX client WITHOUT proxies
+http_client = httpx.Client(proxies=None)
 
 app = Flask(__name__)
 
-# Create OpenAI client without proxies
-client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY", "your-api-key-here"))
+# Create OpenAI client without proxy
+client = OpenAI(
+    api_key=os.environ.get("OPENAI_API_KEY", "your-api-key-here"),
+    http_client=http_client
+)
 
 @app.route("/")
 def home():
