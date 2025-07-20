@@ -4,8 +4,8 @@ from flask import Flask, request, jsonify  # Flask-Basisfunktionen importieren
 from flask_cors import CORS  # CORS-Unterstützung für Frontend-Backend-Kommunikation
 import openai  # OpenAI SDK für API-Aufrufe
 
-# 🔑 Deinen API-Key hier einfügen
-openai.api_key = "sk-proj-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"  # <-- Ersetze mit deinem kopierten API-Key
+# 🔑 Deinen OpenAI API-Key hier einfügen
+openai.api_key = "sk-proj-..."  # <-- Ersetze durch deinen echten API-Key
 
 # Flask-App initialisieren
 app = Flask(__name__)
@@ -17,13 +17,16 @@ def ask():
     try:
         # Hole die JSON-Daten aus der Anfrage (enthält die Frage des Users)
         data = request.get_json()
-        user_question = data.get('question')  # Extrahiere die Frage
-        
+        user_question = data.get('prompt')  # Frontend sendet "prompt" im JSON
+
+        if not user_question:
+            return jsonify({'answer': "❌ No question provided."}), 400
+
         print("User asked:", user_question)  # Debug-Ausgabe im Terminal
 
         # 🧠 Sende die User-Frage an OpenAI GPT
         response = openai.ChatCompletion.create(
-            model="gpt-4",  # oder "gpt-3.5-turbo" wenn kein GPT-4 verfügbar
+            model="gpt-4",  # oder "gpt-3.5-turbo" falls GPT-4 nicht verfügbar
             messages=[
                 {"role": "system", "content": "You are a helpful AI assistant for maxik.ai."},
                 {"role": "user", "content": user_question}
@@ -45,3 +48,6 @@ def ask():
         print("Error:", str(e))
         return jsonify({'answer': "❌ Sorry, there was an error processing your request."}), 500
 
+# Starte die Flask-App
+if __name__ == "__main__":
+    app.run(debug=True, host='0.0.0.0', port=5000)  # Läuft lokal auf Port 5000
