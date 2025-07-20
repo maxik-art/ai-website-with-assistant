@@ -6,8 +6,11 @@ import openai
 import os
 from dotenv import load_dotenv
 
-from dotenv import load_dotenv
-load_dotenv()
+# Nur lokal .env laden (Render braucht es nicht)
+if os.environ.get("RENDER") != "true":
+    from dotenv import load_dotenv
+    load_dotenv()
+    
 openai.api_key = os.environ.get("OPENAI_API_KEY")
 
 load_dotenv()
