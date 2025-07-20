@@ -45,13 +45,3 @@ def ask():
         print("Error:", str(e))
         return jsonify({'answer': "❌ Sorry, there was an error processing your request."}), 500
 
-# Starte die Flask-App
-if __name__ == "__main__":
-    app.run(debug=True, host='0.0.0.0', port=5000)  # Läuft lokal auf Port 5000
-
-@app.route('/ask', methods=['POST'])
-def ask():
-    data = request.get_json()
-    prompt = data.get('prompt')
-    # … OpenAI API Call …
-    return jsonify({"answer": ai_response})
