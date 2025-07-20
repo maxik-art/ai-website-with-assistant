@@ -1,53 +1,35 @@
 # app.py – Flask-Backend für den AI-Assistenten mit OpenAI GPT-Anbindung
 
-from flask import Flask, request, jsonify  # Flask-Basisfunktionen importieren
-from flask_cors import CORS  # CORS-Unterstützung für Frontend-Backend-Kommunikation
-import openai  # OpenAI SDK für API-Aufrufe
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+import openai
+import os
+from dotenv import load_dotenv
 
-# 🔑 Deinen OpenAI API-Key hier einfügen
-openai.api_key = "sk-proj-..."  # <-- Ersetze durch deinen echten API-Key
+load_dotenv()
+openai.api_key = os.environ.get("OPENAI_API_KEY")
 
-# Flask-App initialisieren
 app = Flask(__name__)
-CORS(app)  # Aktiviert CORS für alle Routen
+CORS(app)
 
-# Route für die API-Anfrage vom Frontend
+@app.route('/')
+def home():
+    return "Flask-API läuft! Benutze /ask für den Chat."
+
 @app.route('/ask', methods=['POST'])
 def ask():
-    try:
-        # Hole die JSON-Daten aus der Anfrage (enthält die Frage des Users)
-        data = request.get_json()
-        user_question = data.get('prompt')  # Frontend sendet "prompt" im JSON
+    data = request.get_json()
+    prompt = data.get('prompt')
+    if not prompt:
+        return jsonify({'answer': "❌ No prompt provided."}), 400
 
-        if not user_question:
-            return jsonify({'answer': "❌ No question provided."}), 400
+    response = openai.ChatCompletion.create(
+        model="gpt-4",
+        messages=[{"role": "user", "content": prompt}],
+        max_tokens=500
+    )
+    ai_answer = response['choices'][0]['message']['content'].strip()
+    return jsonify({'answer': ai_answer})
 
-        print("User asked:", user_question)  # Debug-Ausgabe im Terminal
-
-        # 🧠 Sende die User-Frage an OpenAI GPT
-        response = openai.ChatCompletion.create(
-            model="gpt-4",  # oder "gpt-3.5-turbo" falls GPT-4 nicht verfügbar
-            messages=[
-                {"role": "system", "content": "You are a helpful AI assistant for maxik.ai."},
-                {"role": "user", "content": user_question}
-            ],
-            max_tokens=500,
-            temperature=0.7
-        )
-
-        # Extrahiere die Antwort des AI-Models
-        ai_answer = response['choices'][0]['message']['content'].strip()
-
-        # Debug-Ausgabe
-        print("AI answered:", ai_answer)
-
-        # Sende die AI-Antwort an das Frontend zurück
-        return jsonify({'answer': ai_answer})
-
-    except Exception as e:
-        print("Error:", str(e))
-        return jsonify({'answer': "❌ Sorry, there was an error processing your request."}), 500
-
-# Starte die Flask-App
 if __name__ == "__main__":
-    app.run(debug=True, host='0.0.0.0', port=5000)  # Läuft lokal auf Port 5000
+    app.run(debug=True, host='0.0.0.0', port=5000)
